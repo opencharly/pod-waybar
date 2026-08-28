@@ -26,6 +26,14 @@ waybar:
               start_sec: 0
               enable: true
               scope: system
+              # waybar is a Wayland client: it exits immediately if the compositor's
+              # socket is not yet listening. This replaces a hand-rolled loop in
+              # waybar-wrapper — same 30s budget, but supervised, so a timeout fails
+              # the service instead of looking like a waybar crash.
+              wait_for:
+                paths:
+                    - "${XDG_RUNTIME_DIR}/${WAYLAND_DISPLAY}"
+                timeout: 30s
             - name: sway-autotile
               exec: "%(ENV_HOME)s/.local/bin/sway-autotile"
               env:
