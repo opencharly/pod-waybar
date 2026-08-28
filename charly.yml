@@ -79,6 +79,28 @@ waybar:
               package:
                 package: waybar
                 installed: true
+            # The wait_for: lowering, asserted on the ARTIFACT it produces. This fails on
+            # the pre-migration candy in both directions: the wait command is absent from
+            # the supervisord entry, and the loop it replaces is still in the wrapper.
+            - check: the supervised waybar entry blocks on the compositor socket before exec
+              file:
+                file: /etc/supervisord.conf
+                exists: true
+                contains:
+                    - contains: '[program:waybar]'
+                    # Deliberately ${...}-free: a check step's strings go through charly's
+                    # own runtime-var expansion, so asserting the literal
+                    # ${XDG_RUNTIME_DIR} the shell must see would be asserting against a
+                    # rewritten needle. These three fragments are unique to the lowering.
+                    - contains: 'until [ -e '
+                    - contains: 'wait_for: timed out after 30s'
+                    - contains: '; exec '
+            - check: waybar-wrapper no longer hand-rolls the wait it delegated to wait_for
+              file:
+                file: "${HOME}/.local/bin/waybar-wrapper"
+                exists: true
+                contains:
+                    - not_contains: 'ELAPSED'
             - check: the waybar-wrapper launcher script is installed under the user's bin
               file:
                 file: ${HOME}/.local/bin/waybar-wrapper
