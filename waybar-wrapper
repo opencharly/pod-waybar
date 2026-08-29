@@ -1,17 +1,14 @@
 #!/bin/bash
-# Wait for Wayland socket, then launch waybar.
-
-TIMEOUT=30
-ELAPSED=0
-while [ ! -S "$XDG_RUNTIME_DIR/$WAYLAND_DISPLAY" ] && [ "$ELAPSED" -lt "$TIMEOUT" ]; do
-    sleep 1
-    ELAPSED=$((ELAPSED + 1))
-done
-
-if [ ! -S "$XDG_RUNTIME_DIR/$WAYLAND_DISPLAY" ]; then
-    echo "ERROR: Wayland socket not found after ${TIMEOUT}s" >&2
-    exit 1
-fi
+# waybar-wrapper: discover the sway IPC socket, then launch waybar.
+#
+# The wait for the Wayland socket is NOT here any more: it is the service's
+# `wait_for:` (charly.yml), lowered by the init plugin into the supervised
+# pre-exec. Supervised means a timeout fails the SERVICE and shows in its
+# status, where this wrapper exiting 1 looked like waybar itself had crashed.
+#
+# The SWAYSOCK discovery below stays: it is a glob search for whichever
+# sway-ipc.*.sock exists, not a wait on a path known in advance, and wait_for:
+# deliberately models only the latter.
 
 # Discover sway IPC socket
 export SWAYSOCK=$(ls /tmp/sway-ipc.*.sock 2>/dev/null | head -1)
