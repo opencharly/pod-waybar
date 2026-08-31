@@ -1,7 +1,7 @@
 version: 2026.232.0520
 waybar:
     candy:
-        version: 2026.144.1443
+        version: 2026.243.0100
         description: |
             Waybar status bar and Sway auto-tiling for the Sway desktop
             Installs the waybar package, stages the waybar-wrapper launcher and the
@@ -10,7 +10,7 @@ waybar:
             supervisord services then run the bar and the auto-tiler against the Sway
             Wayland session. Every installed artifact is file-verifiable at build scope.
         require:
-            - '@github.com/opencharly/pod-sway:v2026.239.1611'
+            - '@github.com/opencharly/pod-sway:v2026.241.2004'
         distro:
             fedora:
                 package:
