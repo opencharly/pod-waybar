@@ -8,7 +8,7 @@ waybar:
             supervisord services then run the bar and the auto-tiler against the Sway
             Wayland session. Every installed artifact is file-verifiable at build scope.
         require:
-            - '@github.com/opencharly/pod-sway:v2026.241.2004'
+            - '@github.com/opencharly/pod-sway:v2026.272.1053'
         distro:
             fedora:
                 package:
